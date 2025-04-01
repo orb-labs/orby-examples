@@ -112,7 +112,9 @@ func (c *OrbyClient) GetStandardizedTokenIds(tokens []TokenParams) (json.RawMess
 func (c *OrbyClient) GetOperationsToSwap(
 	accountClusterId string,
 	standardizedTokenIds []string,
-	amount string) (json.RawMessage, error) {
+	amount string,
+	externalInputTokenChainId string,
+	externalOutputTokenChainId string) (json.RawMessage, error) {
 
 	// Check if standardizedTokenIds is empty
 	if len(standardizedTokenIds) == 0 {
@@ -123,12 +125,20 @@ func (c *OrbyClient) GetOperationsToSwap(
 	params := GetOperationsToSwapParams{
 		AccountClusterId: accountClusterId,
 		SwapType:         "EXACT_INPUT",
-		Input: SwapParam{
+		Input: InputSwapParam{
 			StandardizedTokenId: standardizedTokenIds[0],
 			Amount:              amount,
+			TokenSources: []TokenSource{
+				{
+					ChainID: externalInputTokenChainId,
+				},
+			},
 		},
-		Output: SwapParam{
+		Output: OutputSwapParam{
 			StandardizedTokenId: standardizedTokenIds[len(standardizedTokenIds)-1],
+			TokenDestination: TokenSource{
+				ChainID: externalOutputTokenChainId,
+			},
 		},
 	}
 
