@@ -23,7 +23,7 @@ import (
 
 func main() {
 	// Set up account cluster, virtual node, and private key based on env vars
-	accountClusterId, virtualNodeClient, privateKey := setup()
+	accountClusterId, virtualNodeClient, privateKey, externalInputTokenChainId, externalOutputTokenChainId := setup()
 	if accountClusterId == "" || virtualNodeClient == nil || privateKey == nil {
 		log.Fatalf("[ERROR] Error setting up account cluster, virtual node, or private key")
 	}
@@ -31,22 +31,15 @@ func main() {
 	// Define input and output tokens
 	inputTokenAddress := getEnvWithDefault("INPUT_TOKEN_ADDRESS", "")
 	outputTokenAddress := getEnvWithDefault("OUTPUT_TOKEN_ADDRESS", "")
-	tokenChainId, err := strconv.ParseInt(getEnvWithDefault("TOKEN_CHAIN_ID", ""), 10, 64)
-	if err != nil {
-		log.Fatalf("[ERROR] Error getting token chain id: %v", err)
-	}
-
-	// Format chain IDs to external format
-	externalTokenChainId := GetExternalChainIdFromInternalChainId(tokenChainId)
 
 	// Create token parameters
 	tokens := []TokenParams{
 		{
-			ChainId:      externalTokenChainId,
+			ChainId:      externalInputTokenChainId,
 			TokenAddress: inputTokenAddress,
 		},
 		{
-			ChainId:      externalTokenChainId,
+			ChainId:      externalOutputTokenChainId,
 			TokenAddress: outputTokenAddress,
 		},
 	}
@@ -91,7 +84,9 @@ func main() {
 	swapResult, err := virtualNodeClient.GetOperationsToSwap(
 		accountClusterId,
 		tokenIdsResponse.StandardizedTokenIds,
-		amount)
+		amount,
+		externalInputTokenChainId,
+		externalOutputTokenChainId)
 	if err != nil {
 		log.Printf("[ERROR] Error getting operations to swap: %v", err)
 	}
@@ -201,7 +196,7 @@ func main() {
 }
 
 // setup creates an account cluster, virtual node, and private key based on the defined environment variables
-func setup() (string, *OrbyClient, *ecdsa.PrivateKey) {
+func setup() (string, *OrbyClient, *ecdsa.PrivateKey, string, string) {
 	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
@@ -288,7 +283,7 @@ func setup() (string, *OrbyClient, *ecdsa.PrivateKey) {
 		if json.Unmarshal(clusterResult, &rawResponse) == nil {
 			fmt.Printf("          Raw account cluster response: %v\n", rawResponse)
 		}
-		return "", nil, nil
+		return "", nil, nil, "", ""
 	}
 
 	fmt.Println("\n[INFO] Account cluster created successfully:")
@@ -303,26 +298,28 @@ func setup() (string, *OrbyClient, *ecdsa.PrivateKey) {
 		fmt.Printf("             Chain ID: %s\n", account.ChainId)
 	}
 
-	// Get the source chain ID
-	sourceChainId := int64(1000000000001) // Default to the large chain ID
-	sourceChainIdStr := getEnvWithDefault("SOURCE_CHAIN_ID", "")
-
-	// Try to parse the chain ID as a 64-bit integer
-	parsedChainId, err := strconv.ParseInt(sourceChainIdStr, 10, 64)
-	if err == nil {
-		sourceChainId = parsedChainId
-	} else {
-		log.Printf("[WARN] Could not parse SOURCE_CHAIN_ID, using default (1000000000001): %v", err)
+	// Get source / destination chain ids
+	inputTokenChainId, err := strconv.ParseInt(getEnvWithDefault("INPUT_TOKEN_CHAIN_ID", ""), 10, 64)
+	if err != nil {
+		log.Fatalf("[ERROR] Error getting token chain id: %v", err)
+	}
+	outputTokenChainId, err := strconv.ParseInt(getEnvWithDefault("OUTPUT_TOKEN_CHAIN_ID", ""), 10, 64)
+	if err != nil {
+		log.Fatalf("[ERROR] Error getting token chain id: %v", err)
 	}
 
-	externalChainId := GetExternalChainIdFromInternalChainId(sourceChainId)
-	fmt.Printf("\n[INFO] Using chain ID: %d (external format: %s)\n", sourceChainId, externalChainId)
+	// Format chain IDs to external format
+	externalInputTokenChainId := GetExternalChainIdFromInternalChainId(inputTokenChainId)
+	externalOutputTokenChainId := GetExternalChainIdFromInternalChainId(outputTokenChainId)
+
+	fmt.Printf("\n[INFO] Input chain ID: %d (external format: %s)\n", inputTokenChainId, externalInputTokenChainId)
+	fmt.Printf("\n[INFO] Output chain ID: %d (external format: %s)\n", outputTokenChainId, externalOutputTokenChainId)
 
 	// Get virtual node RPC URL
 	fmt.Println("\nGetting virtual node RPC URL...")
 	virtualNodeResult, err := privateOrbyClient.GetVirtualNodeRpcUrl(
 		clusterResponse.AccountClusterId,
-		externalChainId,
+		externalInputTokenChainId,
 		address,
 	)
 
@@ -350,7 +347,7 @@ func setup() (string, *OrbyClient, *ecdsa.PrivateKey) {
 	virtualNodeClient := NewOrbyClient(virtualNodeRpcUrl, virtualNodeRpcUrl)
 
 	// Return information on account cluster, virtual node, and private key
-	return clusterResponse.AccountClusterId, virtualNodeClient, privateKey
+	return clusterResponse.AccountClusterId, virtualNodeClient, privateKey, externalInputTokenChainId, externalOutputTokenChainId
 }
 
 // signTypedData signs EIP-712 typed data with the provided private key and returns the signature and recovered address

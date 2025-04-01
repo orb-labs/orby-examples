@@ -2,7 +2,9 @@
 
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // StandardizedTokenIdsResponse represents the response from orby_getStandardizedTokenIds
 type StandardizedTokenIdsResponse struct {
@@ -49,18 +51,31 @@ type SendSignedOperationsParams struct {
 	AccountClusterId string            `json:"accountClusterId"`
 }
 
+type TokenSource struct {
+	ChainID string `json:"chainId"`
+	Address string `json:"address,omitempty"`
+}
+
+// InputSwapParam represents a token with its standardizedTokenId and amount
+type InputSwapParam struct {
+	StandardizedTokenId string        `json:"standardizedTokenId"`
+	Amount              string        `json:"amount,omitempty"`
+	TokenSources        []TokenSource `json:"tokenSources,omitempty"`
+}
+
 // SwapParam represents a token with its standardizedTokenId and amount
-type SwapParam struct {
-	StandardizedTokenId string `json:"standardizedTokenId"`
-	Amount              string `json:"amount,omitempty"`
+type OutputSwapParam struct {
+	StandardizedTokenId string      `json:"standardizedTokenId"`
+	Amount              string      `json:"amount,omitempty"`
+	TokenDestination    TokenSource `json:"tokenDestination,omitempty"`
 }
 
 // GetOperationsToSwapParams represents the parameters for orby_getOperationsToSwap
 type GetOperationsToSwapParams struct {
-	AccountClusterId string    `json:"accountClusterId"`
-	SwapType         string    `json:"swapType"`
-	Input            SwapParam `json:"input"`
-	Output           SwapParam `json:"output"`
+	AccountClusterId string          `json:"accountClusterId"`
+	SwapType         string          `json:"swapType"`
+	Input            InputSwapParam  `json:"input"`
+	Output           OutputSwapParam `json:"output"`
 }
 
 // Asset represents a cryptocurrency or token asset
