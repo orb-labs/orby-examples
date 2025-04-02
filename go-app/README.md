@@ -32,10 +32,10 @@ A Go application for creating, signing, and sending ethereum transactions using 
 4. Edit the `.env` file with your information:
 
    ```
-   # Orby Engine Admin url
+   # Orby Engine Admin url ([contact us](https://x.com/0xOrbLabs) for your url)
    ORBY_ENGINE_ADMIN_URL=orby_engine_admin_url
 
-   # Orby url
+   # Orby url ([contact us](https://x.com/0xOrbLabs) for your url)
    ORBY_URL=your_orby_url
 
    # Instance name
@@ -84,7 +84,7 @@ The application will:
 ## Security Considerations
 
 - **Never share your private key**: Keep your private key secure at all times.
-- **Test on testnets first**: Always test on Ethereum testnets (Sepolia, Goerli) before using on mainnet.
+- **Test on testnets first**: Always test on Ethereum testnets (Sepolia) before using on mainnet.
 - **Use environment variables**: Avoid hardcoding private keys in your code.
 
 ## License
