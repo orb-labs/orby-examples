@@ -30,12 +30,14 @@ A Go application for creating, signing, and sending ethereum transactions using 
    ```
 
 4. Edit the `.env` file with your information:
+   
+   Note: [contact us](https://x.com/0xOrbLabs) for your orby urls
 
    ```
-   # Orby Engine Admin url ([contact us](https://x.com/0xOrbLabs) for your url)
+   # Orby Engine Admin url
    ORBY_ENGINE_ADMIN_URL=orby_engine_admin_url
 
-   # Orby url ([contact us](https://x.com/0xOrbLabs) for your url)
+   # Orby url
    ORBY_URL=your_orby_url
 
    # Instance name
