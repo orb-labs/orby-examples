@@ -1,1 +1,5 @@
+ethers6-app/.env
+ethers6-app/node_modules
+ethers6-app/dist
+
 go-app/.env
