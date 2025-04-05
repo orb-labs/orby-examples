@@ -30,19 +30,15 @@ An ethers6 application for creating, signing, and sending ethereum transactions 
    ```
 
 4. Edit the `.env` file with your information:
+   
+   Note: [contact us](https://x.com/0xOrbLabs) for your orby engine admin url
 
    ```
-   # Orby Engine Admin url ([contact us](https://x.com/0xOrbLabs) for your url)
+   # Orby Engine Admin url 
    ORBY_ENGINE_ADMIN_URL=orby_engine_admin_url
-
-   # Orby url ([contact us](https://x.com/0xOrbLabs) for your url)
-   ORBY_URL=your_orby_url
 
    # Instance name
    ORBY_INSTANCE_NAME=some_name
-
-   # Source chain ID
-   SOURCE_CHAIN_ID=1000000000001
 
    # Input token address (with 0x prefix)
    INPUT_TOKEN_ADDRESS=your_input_token_address (with 0x prefix)
@@ -50,17 +46,17 @@ An ethers6 application for creating, signing, and sending ethereum transactions 
    # Output token address (with 0x prefix)
    OUTPUT_TOKEN_ADDRESS=your_output_token_address
 
-   # Chain ID your tokens are on
-   TOKEN_CHAIN_ID=1000000000001
+   # Chain ID your input tokens are on
+   INPUT_TOKEN_CHAIN_ID=1000000000001
+
+   # Chain ID your output tokens are on
+   OUTPUT_TOKEN_CHAIN_ID=1000000000002
 
    # Your private key (without 0x prefix)
    PRIVATE_KEY=your_private_key_here
 
    # Amount of input token to use (e.g. 1)
    AMOUNT=input_token_amount
-
-   # Verbose printing (true/false)
-   VERBOSE=true
 
    ```
 
@@ -84,7 +80,7 @@ The application will:
 ## Security Considerations
 
 - **Never share your private key**: Keep your private key secure at all times.
-- **Test on testnets first**: Always test on Ethereum testnets (Sepolia) before using on mainnet.
+- **Test on testnets first**: Always test on Ethereum testnets before using on mainnet.
 - **Use environment variables**: Avoid hardcoding private keys in your code.
 
 ## License

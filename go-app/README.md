@@ -43,9 +43,6 @@ A Go application for creating, signing, and sending ethereum transactions using 
    # Instance name
    ORBY_INSTANCE_NAME=some_name
 
-   # Source chain ID
-   SOURCE_CHAIN_ID=1000000000001
-
    # Input token address (with 0x prefix)
    INPUT_TOKEN_ADDRESS=your_input_token_address (with 0x prefix)
 
@@ -86,7 +83,7 @@ The application will:
 ## Security Considerations
 
 - **Never share your private key**: Keep your private key secure at all times.
-- **Test on testnets first**: Always test on Ethereum testnets (Sepolia) before using on mainnet.
+- **Test on testnets first**: Always test on Ethereum testnets before using on mainnet.
 - **Use environment variables**: Avoid hardcoding private keys in your code.
 
 ## License
