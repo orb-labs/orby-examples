@@ -1,10 +1,10 @@
 # Ethereum Transaction Signer
 
-A Go application for creating, signing, and sending ethereum transactions using Orby.
+An ethers6 application for creating, signing, and sending ethereum transactions using Orby.
 
 ## Prerequisites
 
-- Go 1.20 or higher
+- ethers6
 - An Ethereum private key
 - Internet connection (for fetching network data and optional broadcasting)
 
@@ -14,13 +14,13 @@ A Go application for creating, signing, and sending ethereum transactions using 
 
    ```
    git clone https://github.com/orb-labs/orby-examples
-   cd go-app
+   cd ethers6-app
    ```
 
 2. Install dependencies:
 
    ```
-   go mod tidy
+   yarn install
    ```
 
 3. Create a `.env` file from the example:
@@ -31,14 +31,11 @@ A Go application for creating, signing, and sending ethereum transactions using 
 
 4. Edit the `.env` file with your information:
    
-   Note: [contact us](https://x.com/0xOrbLabs) for your orby urls
+   Note: [contact us](https://x.com/0xOrbLabs) for your orby engine admin url
 
    ```
-   # Orby Engine Admin url
+   # Orby Engine Admin url 
    ORBY_ENGINE_ADMIN_URL=orby_engine_admin_url
-
-   # Orby url
-   ORBY_URL=your_orby_url
 
    # Instance name
    ORBY_INSTANCE_NAME=some_name
@@ -49,17 +46,17 @@ A Go application for creating, signing, and sending ethereum transactions using 
    # Output token address (with 0x prefix)
    OUTPUT_TOKEN_ADDRESS=your_output_token_address
 
-   # Chain ID your tokens are on
-   TOKEN_CHAIN_ID=1000000000001
+   # Chain ID your input tokens are on
+   INPUT_TOKEN_CHAIN_ID=1000000000001
+
+   # Chain ID your output tokens are on
+   OUTPUT_TOKEN_CHAIN_ID=1000000000002
 
    # Your private key (without 0x prefix)
    PRIVATE_KEY=your_private_key_here
 
    # Amount of input token to use (e.g. 1)
    AMOUNT=input_token_amount
-
-   # Verbose printing (true/false)
-   VERBOSE=true
 
    ```
 
@@ -68,7 +65,7 @@ A Go application for creating, signing, and sending ethereum transactions using 
 Run the application:
 
 ```
-go run ./src
+yarn start
 ```
 
 The application will:
@@ -76,9 +73,9 @@ The application will:
 1. Create an account cluster based on your private key
 2. Create a virtual node based on the account cluster
 3. Fetch standardized token information based on input/output token addresses
-4. Call orby_getOperationsToSwap to figure out what transactions to make
+4. Call getOperationsToSwap to figure out what transactions to make
 5. Sign any transactions that have been returned with your private key
-6. Call orby_sendSignedOperations on those signed transactions
+6. Call sendSignedOperations on those signed transactions
 
 ## Security Considerations
 
