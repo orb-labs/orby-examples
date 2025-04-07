@@ -57,7 +57,6 @@ An ethers6 application for creating, signing, and sending ethereum transactions 
 
    # Amount of input token to use (e.g. 1)
    AMOUNT=input_token_amount
-
    ```
 
 ## Usage

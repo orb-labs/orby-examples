@@ -1,8 +1,11 @@
-import { Account, getOrbyChainId, OperationDataFormat, OperationStatusType, OperationType, QuoteType } from "@orb-labs/orby-core";
-import { ethers, TypedDataDomain, TypedDataField } from "ethers";
-import { OrbyProvider } from "@orb-labs/orby-ethers6";
-import * as dotenv from "dotenv";
+// src/index.ts
+import { http, Client, createClient, HttpTransport, PublicRpcSchema, PrivateKeyAccount, TypedDataDomain, createWalletClient, TypedDataParameter } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import dotenv from 'dotenv';
+import { OrbyActions, orbyActions } from '@orb-labs/orby-viem-extension';
+import { Account, getOrbyChainId, OperationDataFormat, OperationType, QuoteType } from '@orb-labs/orby-core';
 
+// Load environment variables
 dotenv.config();
 
 // Load params from environment variables
@@ -44,11 +47,18 @@ if (!AMOUNT) {
 export const notEmpty = <T>(value: T): value is NonNullable<typeof value> => value != undefined && value != null;
 
 async function main() {
-  // Connect to an orby engine admin
-  const orbyAdminProvider = new OrbyProvider(ORBY_ENGINE_ADMIN_URL);
+  // Connect to orby admin client
+  const orbyAdminProvider: Client<
+      HttpTransport,
+      undefined,
+      undefined,
+      PublicRpcSchema,
+      OrbyActions
+  > = createClient({
+  transport: http(ORBY_ENGINE_ADMIN_URL),
+  }).extend(orbyActions);
 
-  // Create a private instance
-  console.log(`[INFO] creating orby instance using name: ${ORBY_INSTANCE_NAME}`);
+  // Create private instance
   const { success, orbyInstancePrivateUrl } = await orbyAdminProvider.createInstance(ORBY_INSTANCE_NAME);
   if (!success || !orbyInstancePrivateUrl) {
     throw new Error("failed to create instance");
@@ -58,10 +68,18 @@ async function main() {
 
   // Connect to the private instance
   console.log("[INFO] creating private instance using url: ", orbyInstancePrivateUrl);
-  const privateInstanceProvider = new OrbyProvider(orbyInstancePrivateUrl);
+  const privateInstanceProvider: Client<
+      HttpTransport,
+      undefined,
+      undefined,
+      PublicRpcSchema,
+      OrbyActions
+  > = createClient({
+  transport: http(orbyInstancePrivateUrl),
+  }).extend(orbyActions);
 
   // Get address from private key
-  const wallet = new ethers.Wallet(PRIVATE_KEY);
+  const wallet = privateKeyToAccount(`0x${PRIVATE_KEY}`);
   const address = wallet.address;
   console.log("\n[INFO] derived address from private key: ", address)
 
@@ -72,7 +90,7 @@ async function main() {
   if (!accountClusterId) {
     throw new Error("failed to create account cluster");
   }
-
+  
   // Get virtual node RPC URL
   console.log("\n[INFO] getting virtual node RPC URL...");
   console.log(`[INFO]   accountClusterId: ${accountClusterId}`);
@@ -90,7 +108,15 @@ async function main() {
   }
 
   // Get virtual node client
-  const virtualNodeProvider = new OrbyProvider(virtualNodeRpcUrl);
+  const virtualNodeProvider: Client<
+      HttpTransport,
+      undefined,
+      undefined,
+      PublicRpcSchema,
+      OrbyActions
+  > = createClient({
+  transport: http(virtualNodeRpcUrl),
+  }).extend(orbyActions);
 
   // Get standardized token ids using the virtual node
   const tokens = [
@@ -112,23 +138,16 @@ async function main() {
 
   // Get operations needed to swap using the virtual node and standardized token ids
   console.log("\n[INFO] calling getOperationsToSwap...");
-  const input = { 
+  const input = {
     standardizedTokenId: standardizedTokenIds[0], 
     amount: BigInt(AMOUNT),
     tokenSources: [{ chainId: BigInt(INPUT_TOKEN_CHAIN_ID) }]
   };
-  const output = { 
+  const output = {
     standardizedTokenId: standardizedTokenIds[standardizedTokenIds.length - 1],
     tokenDestination: { chainId: BigInt(OUTPUT_TOKEN_CHAIN_ID) }
   };
   const gasToken = { standardizedTokenId: standardizedTokenIds[0] };
-  console.log(`         Input Token:`);
-  console.log(`           Standardized Token ID: ${input.standardizedTokenId}`);
-  console.log(`           Amount: ${input.amount}`);
-  console.log(`           Token Sources (Chain ID): ${input.tokenSources[0].chainId}`);
-  console.log(`         Output Token:`);
-  console.log(`           Standardized Token ID: ${output.standardizedTokenId}`);
-  console.log(`           Token Destination (Chain ID): ${output.tokenDestination.chainId}`);
   const swapResponse = await virtualNodeProvider.getOperationsToSwap(
     accountClusterId,
     QuoteType.EXACT_INPUT,
@@ -160,9 +179,9 @@ async function main() {
       console.log(`         To: ${operation.to}`);
       console.log(`         Chain ID: ${operation.chainId}`);
       console.log(`         TX RPC URL: ${operation.txRpcUrl}`);
-  
+
       // Sign the operations
-      const signature = await signTransaction(wallet, operation);
+      const signature = await signOperation(wallet, operation);
       return { 
         type: operation.type, 
         signature, 
@@ -171,9 +190,9 @@ async function main() {
         from: operation.from
       };
   });
-  
-  const signedOperations = (await Promise.all(promises)).filter(notEmpty);
 
+  const signedOperations = (await Promise.all(promises)).filter(notEmpty);
+  
   if (signedOperations) {
     console.log("\n[INFO] finished signing transactions");
 
@@ -183,7 +202,15 @@ async function main() {
     if (!finalOperation) {
       throw new Error("\n[INFO] failed to find final transaction");
     }
-    const finalTxOrbyProvider = new OrbyProvider(finalOperation.txRpcUrl);
+    const finalTxOrbyProvider: Client<
+        HttpTransport,
+        undefined,
+        undefined,
+        PublicRpcSchema,
+        OrbyActions
+    > = createClient({
+    transport: http(finalOperation.txRpcUrl),
+    }).extend(orbyActions);
 
     console.log(`\n[INFO] sending transactions to ${finalOperation.txRpcUrl}`);
 
@@ -196,35 +223,44 @@ async function main() {
   }
 }
 
-async function signTransaction(wallet: ethers.Wallet, operation: any): Promise<string> {
+async function signOperation(account: PrivateKeyAccount, operation: any): Promise<string> {
   const { from, to, data, gasPrice, maxPriorityFeePerGas, maxFeePerGas, format, gasLimit, value, nonce, chainId } =
     operation;
-
+  
+  createWalletClient
   if (format?.trim() == OperationDataFormat.TRANSACTION) {
     const txData = {
       from,
       to,
-      value: value?.toRawAmount(),
-      data,
+      value,
+      input: data,
       nonce: Number(nonce),
-      gasLimit,
+      gas: gasLimit,
       chainId,
       gasPrice,
       maxFeePerGas,
-      maxPriorityFeePerGas,
+      maxPriorityFeePerGas
     };
-
-    const tx = await wallet.populateTransaction(txData);
-    return await wallet.signTransaction(tx);
+    
+    return await account.signTransaction(txData);
   } else {
     const parsedData = JSON.parse(data) as {
       domain: TypedDataDomain;
-      types: Record<string, Array<TypedDataField>>;
+      types: Record<string, Array<TypedDataParameter>>;
       message: Record<string, any>;
+      primaryType: string;
     };
 
-    return await wallet.signTypedData(parsedData.domain, parsedData.types, parsedData.message);
+    const eip712Domain = [
+      { name: "name", type: "string" },
+      { name: "chainId", type: "uint256" },
+      { name: "verifyingContract", type: "address" },
+    ];
+    parsedData.types["EIP712Domain"] = eip712Domain;
+
+    return await account.signTypedData(parsedData);
   }
 }
 
+// Run the application
 main().catch((err) => console.error("[ERROR] ", err));

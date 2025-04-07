@@ -1,0 +1,28 @@
+{
+  "name": "viem-app",
+  "version": "1.0.0",
+  "description": "App for creating, signing, and sending transactions with Viem and Orby",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "ethereum",
+    "viem",
+    "blockchain",
+    "web3"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@orb-labs/orby-viem-extension": "^0.0.20",
+    "dotenv": "^16.3.1",
+    "viem": "^2.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  }
+}
