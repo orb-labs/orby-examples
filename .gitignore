@@ -3,3 +3,7 @@ ethers6-app/node_modules
 ethers6-app/dist
 
 go-app/.env
+
+viem-app/.env
+viem-app/node_modules
+viem-app/dist
