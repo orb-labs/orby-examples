@@ -1,0 +1,22 @@
+{
+  "name": "ethers6-app",
+  "version": "1.0.0",
+  "description": "A ethers6 application that uses Orby to sign and send transactions",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts"
+  },
+  "dependencies": {
+    "@orb-labs/orby-ethers6": "^0.0.10",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
+  }
+}
