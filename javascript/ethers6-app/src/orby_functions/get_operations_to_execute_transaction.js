@@ -1,6 +1,6 @@
 const { CreateOperationsStatus } = require("@orb-labs/orby-core");
 const { INPUT_TOKEN_ADDRESS, AMOUNT } = require("../config");
-const { signTransaction, signTypedData, iface } = require("../constants");
+const { signTransaction, signTypedData, iface } = require("../utils");
 
 class GetOperationsToExecuteTransaction {
   constructor(

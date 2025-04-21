@@ -1,7 +1,7 @@
 import { OrbyProvider } from "@orb-labs/orby-ethers6";
 import { AccountCluster, CreateOperationsStatus } from "@orb-labs/orby-core";
 import { AMOUNT, INPUT_TOKEN_ADDRESS, INPUT_TOKEN_CHAIN_ID } from "..";
-import { noOpSigner, signTransaction, signTypedData } from "../constants";
+import { noOpSigner, signTransaction, signTypedData } from "../utils";
 
 export class GetOperationsToSignTypedData {
   private virtualNodeProvider: OrbyProvider;

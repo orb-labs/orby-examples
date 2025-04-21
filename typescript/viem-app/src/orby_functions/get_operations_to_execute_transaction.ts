@@ -2,7 +2,7 @@ import { Client, HttpTransport, PublicRpcSchema, encodeFunctionData, erc20Abi, A
 import { OrbyActions } from '@orb-labs/orby-viem-extension';
 import { AccountCluster, CreateOperationsStatus } from "@orb-labs/orby-core";
 import { INPUT_TOKEN_ADDRESS, AMOUNT } from "..";
-import { signTransaction, signTypedData } from "../constants";
+import { signTransaction, signTypedData } from "../utils";
 
 export class GetOperationsToExecuteTransaction {
   private virtualNodeProvider: Client<HttpTransport, undefined, undefined, PublicRpcSchema, OrbyActions>;
