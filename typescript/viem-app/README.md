@@ -14,7 +14,7 @@ A viem application for creating, signing, and sending ethereum transactions usin
 
    ```
    git clone https://github.com/orb-labs/orby-examples
-   cd viem-app
+   cd typescript/viem-app
    ```
 
 2. Install dependencies:

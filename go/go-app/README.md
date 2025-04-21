@@ -14,7 +14,7 @@ A Go application for creating, signing, and sending ethereum transactions using 
 
    ```
    git clone https://github.com/orb-labs/orby-examples
-   cd go-app
+   cd go/go-app
    ```
 
 2. Install dependencies:

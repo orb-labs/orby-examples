@@ -1,4 +1,4 @@
-package examples
+package orbyfunctions
 
 import (
 	"encoding/json"

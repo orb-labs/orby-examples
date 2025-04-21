@@ -1,0 +1,46 @@
+{
+  "name": "orbykit",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@dynamic-labs/ethereum": "4.0.0-alpha.21",
+    "@dynamic-labs/ethereum-aa": "4.0.0-alpha.21",
+    "@dynamic-labs/sdk-react-core": "4.0.0-alpha.21",
+    "@dynamic-labs/wagmi-connector": "4.0.0-alpha.21",
+    "@lido-sdk/providers": "^1.4.14",
+    "@lido-sdk/react": "^2.0.5",
+    "@orb-labs/orbykit": "^0.0.6",
+    "@privy-io/react-auth": "^1.58.1",
+    "@privy-io/wagmi": "^0.2.9",
+    "@rainbow-me/rainbowkit": "^2.1.2",
+    "@tanstack/react-query": "^5.35.5",
+    "@uidotdev/usehooks": "^2.4.1",
+    "@usedapp/core": "^1.2.13",
+    "@web3-react/core": "^8.2.3",
+    "@web3-react/metamask": "^8.2.4",
+    "@zerodev/waas": "^0.2.2",
+    "@zerodev/webauthn-key": "^5.3.1",
+    "autoprefixer": "^10.4.16",
+    "ethers": "^5.7.2",
+    "next": "^15.3.1",
+    "postcss": "^8.4.33",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.3.0",
+    "tailwindcss": "^3.4.1",
+    "viem": "^2.9.25",
+    "wagmi": "^2.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.18.10",
+    "@types/react": "^18.2.37",
+    "eslint": "^8.15.0",
+    "eslint-config-next": "^13.4.19"
+  }
+}

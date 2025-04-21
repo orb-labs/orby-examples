@@ -14,7 +14,7 @@ An ethers6 application for creating, signing, and sending ethereum transactions 
 
    ```
    git clone https://github.com/orb-labs/orby-examples
-   cd ethers6-app
+   cd typescript/ethers6-app
    ```
 
 2. Install dependencies:

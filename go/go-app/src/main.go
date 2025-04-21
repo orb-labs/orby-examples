@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-app/src/orby"
-	"go-app/src/orby/examples"
+	orbyfunctions "go-app/src/orby/orby_functions"
 	"log"
 	"strconv"
 
@@ -35,13 +35,13 @@ func main() {
 
 	switch orby.GetEnvWithDefault("EXAMPLE_TYPE", "") {
 	case "getOperationsToSwap":
-		example = examples.NewGetOperationsToSwap(*virtualNodeClient, accountClusterId)
+		example = orbyfunctions.NewGetOperationsToSwap(*virtualNodeClient, accountClusterId)
 	case "getOperationsToExecuteTransaction":
-		example = examples.NewGetOperationsToExecuteTransaction(*virtualNodeClient, accountClusterId)
+		example = orbyfunctions.NewGetOperationsToExecuteTransaction(*virtualNodeClient, accountClusterId)
 	case "getOperationsToSignTypedData":
-		example = examples.NewGetOperationsToSignTypedData(*virtualNodeClient, accountClusterId)
+		example = orbyfunctions.NewGetOperationsToSignTypedData(*virtualNodeClient, accountClusterId)
 	case "getFungibleTokenPortfolio":
-		example = examples.NewGetFungibleTokenPortfolio(*virtualNodeClient, accountClusterId)
+		example = orbyfunctions.NewGetFungibleTokenPortfolio(*virtualNodeClient, accountClusterId)
 	default:
 		log.Fatalf("invalid example type: %s", orby.GetEnvWithDefault("EXAMPLE_TYPE", ""))
 	}

@@ -14,7 +14,7 @@ An ethers6 application (in javascript) for creating, signing, and sending ethere
 
    ```
    git clone https://github.com/orb-labs/orby-examples
-   cd ethers6-js-app
+   cd javascript/ethers6-app
    ```
 
 2. Install dependencies:
