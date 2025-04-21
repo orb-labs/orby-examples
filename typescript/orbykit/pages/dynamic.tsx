@@ -9,12 +9,6 @@ import {
 import { http, createConfig, WagmiProvider, Config } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-  sepolia,
-  optimismSepolia,
-  baseSepolia,
-  holesky,
-  polygonAmoy,
-  arbitrumSepolia,
   mainnet,
   base,
   optimism,
@@ -30,7 +24,6 @@ import {
   useDynamicContext,
 } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { ZeroDevSmartWalletConnectorsWithConfig } from "@dynamic-labs/ethereum-aa";
 import {
   Account,
   AccountCluster,
@@ -58,6 +51,7 @@ import {
   signTypedData,
   SendTransactionParameters,
 } from "wagmi/actions";
+import React from "react";
 
 const config = createConfig({
   chains: [mainnet, base, polygon, optimism, arbitrum],
@@ -236,8 +230,8 @@ function DynamicExample() {
     : undefined;
 
   const orbyKitConfig: OrbyKitConfig = {
-    instancePrivateAPIKey: "f1c1d996-8df4-4d23-b926-ca702173021d",
-    instancePublicAPIKey: "f1c1d996-8df4-4d23-b926-ca702173021d",
+    instancePrivateAPIKey: process.env.ORBY_PRIVATE_API_KEY ?? "",
+    instancePublicAPIKey: process.env.ORBY_PUBLIC_API_KEY ?? "",
     transactingAccount,
     environment: BlockchainEnvironment.MAINNET,
     appName: "Example",
