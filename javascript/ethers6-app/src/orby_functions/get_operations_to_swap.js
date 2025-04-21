@@ -9,7 +9,7 @@ const {
 const {
   signTransaction,
   signTypedData,
-} = require("../constants");
+} = require("../utils");
 
 class GetOperationsToSwap {
   constructor(
