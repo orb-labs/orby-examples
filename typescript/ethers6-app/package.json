@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn src/index.ts"
   },
   "dependencies": {
-    "@orb-labs/orby-ethers6": "^0.0.10",
+    "@orb-labs/orby-ethers6": "^0.0.18",
     "dotenv": "^16.3.1",
     "ethers": "^6.7.1"
   },
