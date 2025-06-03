@@ -1,10 +1,6 @@
 import { OrbyProvider } from "@orb-labs/orby-ethers6";
 import { AccountCluster, CreateOperationsStatus } from "@orb-labs/orby-core";
-import {
-  onOperationSetStatusUpdateCallback,
-  signTransaction,
-  signTypedData,
-} from "../utils";
+import { onOperationSetStatusUpdateCallback, signTransaction, signTypedData } from "../utils";
 
 export class GetOperationsToSignTypedData {
   private virtualNodeProvider: OrbyProvider;
@@ -33,23 +29,18 @@ export class GetOperationsToSignTypedData {
 
     // 2. Call operation
     console.log("\n[INFO] calling getOperationsToSignTypedData...");
-    const response =
-      await this.virtualNodeProvider.getOperationsToSignTypedData(
-        this.accountCluster.accountClusterId,
-        data
-      );
+    const response = await this.virtualNodeProvider.getOperationsToSignTypedData(
+      this.accountCluster.accountClusterId,
+      data
+    );
     if (!response || response.status != CreateOperationsStatus.SUCCESS) {
       throw new Error("failed to get operations to sign typed data");
     }
 
     console.log("\n[INFO] Operations Response:");
     console.log(`         Status: ${response.status}`);
-    console.log(
-      `         Estimated Time: ${response.aggregateEstimatedTimeInMs}`
-    );
-    console.log(
-      `         Number of Operations: ${response.intents?.length ?? 0}`
-    );
+    console.log(`         Estimated Time: ${response.aggregateEstimatedTimeInMs}`);
+    console.log(`         Number of Operations: ${response.intents?.length ?? 0}`);
 
     // 3. Call sendOperationSet to sign and send the operations
     console.log("\n[INFO] calling sendOperationSet...");

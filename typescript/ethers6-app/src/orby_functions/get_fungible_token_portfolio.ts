@@ -5,10 +5,7 @@ export class GetFungibleTokenPortfolio {
   private virtualNodeProvider: OrbyProvider;
   private accountCluster: AccountCluster;
 
-  constructor(
-    virtualNodeProvider: OrbyProvider, 
-    accountCluster: AccountCluster
-  ) {
+  constructor(virtualNodeProvider: OrbyProvider, accountCluster: AccountCluster) {
     this.virtualNodeProvider = virtualNodeProvider;
     this.accountCluster = accountCluster;
   }
@@ -16,9 +13,7 @@ export class GetFungibleTokenPortfolio {
   async run() {
     // 1. Call operation
     console.log("\n[INFO] calling getFungibleTokenPortfolio...");
-    const response = await this.virtualNodeProvider.getFungibleTokenPortfolio(
-      this.accountCluster.accountClusterId
-    );
+    const response = await this.virtualNodeProvider.getFungibleTokenPortfolio(this.accountCluster.accountClusterId);
     if (!response) {
       throw new Error("failed to get fungible token portfolio");
     }

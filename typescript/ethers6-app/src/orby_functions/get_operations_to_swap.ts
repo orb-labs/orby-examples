@@ -1,14 +1,6 @@
 import { OrbyProvider } from "@orb-labs/orby-ethers6";
-import {
-  AccountCluster,
-  CreateOperationsStatus,
-  QuoteType,
-} from "@orb-labs/orby-core";
-import {
-  onOperationSetStatusUpdateCallback,
-  signTransaction,
-  signTypedData,
-} from "../utils";
+import { AccountCluster, CreateOperationsStatus, QuoteType } from "@orb-labs/orby-core";
+import { onOperationSetStatusUpdateCallback, signTransaction, signTypedData } from "../utils";
 
 export class GetOperationsToSwap {
   private virtualNodeProvider: OrbyProvider;
@@ -50,21 +42,14 @@ export class GetOperationsToSwap {
       output,
       gasToken
     );
-    if (
-      !swapResponse ||
-      swapResponse.status != CreateOperationsStatus.SUCCESS
-    ) {
+    if (!swapResponse || swapResponse.status != CreateOperationsStatus.SUCCESS) {
       throw new Error("failed to get operations to swap");
     }
 
     console.log("\n[INFO] Swap Operations Response:");
     console.log(`         Status: ${swapResponse.status}`);
-    console.log(
-      `         Estimated Time: ${swapResponse.aggregateEstimatedTimeInMs}`
-    );
-    console.log(
-      `         Number of Operations: ${swapResponse.intents?.length ?? 0}`
-    );
+    console.log(`         Estimated Time: ${swapResponse.aggregateEstimatedTimeInMs}`);
+    console.log(`         Number of Operations: ${swapResponse.intents?.length ?? 0}`);
 
     // 3. Call sendOperationSet to sign and send the operations
     console.log("\n[INFO] calling sendOperationSet...");
@@ -84,7 +69,7 @@ export class GetOperationsToSwap {
     console.log(`         Operation Set ID: ${sendResponse.operationSetId}`);
 
     // 4. Subscribe to operation set status updates
-    this.virtualNodeProvider?.subscribeToOperationSetStatus(
+    return this.virtualNodeProvider?.subscribeToOperationSetStatus(
       sendResponse.operationSetId,
       onOperationSetStatusUpdateCallback
     );
@@ -114,8 +99,7 @@ export class GetOperationsToSwap {
       console.log(`           Address: ${token.tokenAddress}`);
     });
 
-    const standardizedTokenIds =
-      await this.virtualNodeProvider.getStandardizedTokenIds(tokens);
+    const standardizedTokenIds = await this.virtualNodeProvider.getStandardizedTokenIds(tokens);
     if (!standardizedTokenIds) {
       throw new Error("failed to get standardized token IDs");
     } else {
@@ -129,8 +113,7 @@ export class GetOperationsToSwap {
       tokenSources: [{ chainId: this.inputTokenChainId }],
     };
     const output = {
-      standardizedTokenId:
-        standardizedTokenIds[standardizedTokenIds.length - 1],
+      standardizedTokenId: standardizedTokenIds[standardizedTokenIds.length - 1],
       amount: undefined, // Note: set output amount for EXACT_OUTPUT quotes
       tokenDestination: { chainId: this.outputTokenChainId },
     };
@@ -138,24 +121,14 @@ export class GetOperationsToSwap {
 
     console.log(`\n[INFO] getSwapParams result`);
     console.log(`         Input Token:`);
-    console.log(
-      `           Standardized Token ID: ${input.standardizedTokenId}`
-    );
+    console.log(`           Standardized Token ID: ${input.standardizedTokenId}`);
     console.log(`           Amount: ${input.amount}`);
-    console.log(
-      `           Token Sources (Chain ID): ${input.tokenSources[0].chainId}`
-    );
+    console.log(`           Token Sources (Chain ID): ${input.tokenSources[0].chainId}`);
     console.log(`         Output Token:`);
-    console.log(
-      `           Standardized Token ID: ${output.standardizedTokenId}`
-    );
-    console.log(
-      `           Token Destination (Chain ID): ${output.tokenDestination.chainId}`
-    );
+    console.log(`           Standardized Token ID: ${output.standardizedTokenId}`);
+    console.log(`           Token Destination (Chain ID): ${output.tokenDestination.chainId}`);
     console.log(`         Gas Token:`);
-    console.log(
-      `           Standardized Token ID: ${gasToken.standardizedTokenId}`
-    );
+    console.log(`           Standardized Token ID: ${gasToken.standardizedTokenId}`);
 
     return { input, output, gasToken };
   }

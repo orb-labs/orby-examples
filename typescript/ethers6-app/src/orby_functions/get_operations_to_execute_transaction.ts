@@ -1,11 +1,6 @@
 import { OrbyProvider } from "@orb-labs/orby-ethers6";
 import { AccountCluster, CreateOperationsStatus } from "@orb-labs/orby-core";
-import {
-  signTransaction,
-  signTypedData,
-  iface,
-  onOperationSetStatusUpdateCallback,
-} from "../utils";
+import { signTransaction, signTypedData, iface, onOperationSetStatusUpdateCallback } from "../utils";
 
 export class GetOperationsToExecuteTransaction {
   private virtualNodeProvider: OrbyProvider;
@@ -13,36 +8,37 @@ export class GetOperationsToExecuteTransaction {
   private inputTokenAddress: string;
   private amount: bigint;
   private destination: string;
+  private gasToken?: { standardizedTokenId: string; tokenSources?: { chainId: bigint; address?: string }[] };
 
   constructor(
     virtualNodeProvider: OrbyProvider,
     accountCluster: AccountCluster,
     inputTokenAddress: string,
     amount: bigint,
-    destination: string
+    destination: string,
+    gasToken?: { standardizedTokenId: string; tokenSources?: { chainId: bigint; address?: string }[] }
   ) {
     this.virtualNodeProvider = virtualNodeProvider;
     this.accountCluster = accountCluster;
     this.inputTokenAddress = inputTokenAddress;
     this.amount = amount;
     this.destination = destination;
+    this.gasToken = gasToken;
   }
 
   async run() {
     // 1. Create the data for the transaction
-    const data = iface.encodeFunctionData("transfer", [
-      this.destination,
-      this.amount,
-    ]);
+    const data = iface.encodeFunctionData("transfer", [this.destination, this.amount]);
 
     // 2. Call getOperationsToExecuteTransaction
     console.log("\n[INFO] calling getOperationsToExecuteTransaction...");
-    const response =
-      await this.virtualNodeProvider.getOperationsToExecuteTransaction(
-        this.accountCluster.accountClusterId, // accountClusterId
-        data, // data
-        this.inputTokenAddress // to
-      );
+    const response = await this.virtualNodeProvider.getOperationsToExecuteTransaction(
+      this.accountCluster.accountClusterId,
+      data,
+      this.inputTokenAddress,
+      undefined,
+      this.gasToken
+    );
 
     console.log("\n", response);
 
@@ -52,12 +48,8 @@ export class GetOperationsToExecuteTransaction {
 
     console.log("\n[INFO] Operations Response:");
     console.log(`         Status: ${response.status}`);
-    console.log(
-      `         Estimated Time: ${response.aggregateEstimatedTimeInMs}`
-    );
-    console.log(
-      `         Number of Operations: ${response.intents?.length ?? 0}`
-    );
+    console.log(`         Estimated Time: ${response.aggregateEstimatedTimeInMs}`);
+    console.log(`         Number of Operations: ${response.intents?.length ?? 0}`);
 
     // 3. Sign and send the operations
     console.log("\n[INFO] calling sendOperationSet...");
@@ -78,7 +70,7 @@ export class GetOperationsToExecuteTransaction {
     console.log(`         Operation Set ID: ${sendResponse.operationSetId}`);
 
     // 4. Subscribe to operation set status updates
-    this.virtualNodeProvider?.subscribeToOperationSetStatus(
+    return this.virtualNodeProvider?.subscribeToOperationSetStatus(
       sendResponse.operationSetId,
       onOperationSetStatusUpdateCallback
     );
